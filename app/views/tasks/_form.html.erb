@@ -2,8 +2,8 @@
   <% if task.errors.any? %>
     <div id="error_explanation">
       <ul>
-        <% task.errors.full_tasks.each do |msg| %>
-          <li><%= msg %></li>
+        <% task.errors.full_tasks.each do |tsk| %>
+          <li><%= tsk %></li>
         <% end %>
       </ul>
     </div>
