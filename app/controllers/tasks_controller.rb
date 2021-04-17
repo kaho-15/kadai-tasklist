@@ -1,5 +1,6 @@
 class TasksController < ApplicationController
   before_action :set_task, only: [:show, :edit, :update, :destroy]
+  
 
   def index
     @tasks = Task.all
@@ -17,10 +18,11 @@ class TasksController < ApplicationController
     
     if @task.save
       flash[:success] = 'Taskが正常に投稿されました'
-      redirect_to @task
+      redirect_to root_url
     else
+      @tasks = current_user.tasks.order(id: :desc)
       flash.now[:danger] = 'Taskが投稿されませんでした'
-      render :new
+      render 'toppages/index'
     end
   end
   
@@ -38,10 +40,11 @@ class TasksController < ApplicationController
   end 
   
   def destroy
+    @task = Task.find(params[:id])
     @task.destroy
     
     flash[:success] = 'Taskは正常に削除されました'
-    redirect_to tasks_url
+    redirect_back root_url
   end 
   
   private
@@ -52,4 +55,6 @@ class TasksController < ApplicationController
   def task_params
     params.require(:task).permit(:content, :status)
   end
+  
+  
 end
