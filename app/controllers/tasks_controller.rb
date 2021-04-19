@@ -1,10 +1,10 @@
 class TasksController < ApplicationController
   before_action :require_user_logged_in
-  before_action :correct_user
-  before_action :set_task, only: [:show, :edit, :update, :destroy]
+  before_action :correct_user, except: [:index]
+  before_action :set_task, except: [:index]
 
   def index
-    @tasks = Task.all
+    @tasks = Task.where(user_id: current_user.id)
   end
   
   def show
