@@ -1,13 +1,14 @@
 class TasksController < ApplicationController
   before_action :require_user_logged_in
-  before_action :correct_user, except: [:index]
-  before_action :set_task, except: [:index]
-
+  before_action :correct_user, only: [:edit, :show, :update, :destroy]
+  
+  
   def index
     @tasks = Task.where(user_id: current_user.id)
   end
   
   def show
+    
   end
   
   def new
@@ -15,7 +16,7 @@ class TasksController < ApplicationController
   end
   
   def create
-    @task  = Task.new(task_params)
+    @task = current_user.tasks.build(task_params)
     
     if @task.save
       flash[:success] = 'Taskが正常に投稿されました'
@@ -23,7 +24,7 @@ class TasksController < ApplicationController
     else
       @tasks = current_user.tasks.order(id: :desc)
       flash.now[:danger] = 'Taskが投稿されませんでした'
-      render 'toppages/index'
+      render :new
     end
   end
   
@@ -45,13 +46,11 @@ class TasksController < ApplicationController
     @task.destroy
     
     flash[:success] = 'Taskは正常に削除されました'
-    redirect_back root_url
+    redirect_back(fallback_location: root_path)
   end 
   
   private
-  def set_task
-    @task = Task.find(params[:id])
-  end
+
 
   def task_params
     params.require(:task).permit(:content, :status)
